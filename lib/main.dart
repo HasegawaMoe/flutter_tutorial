@@ -107,15 +107,27 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: .center,
           children: [
-            const Text(
-              'You have pushed the button this many times:',
-              style: TextStyle(
-                fontSize: 30,
+            Expanded(
+              child: Center(
+                child: const Text(
+                  'You have pushed the button this many times:',
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                  textAlign: TextAlign.center,),
               ),
-              textAlign: TextAlign.center,),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+                
+            ),
+            Expanded(
+              child: Container(
+                color: Colors.amber,
+                child: Center(
+                  child: Text(
+                    '$_counter',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
