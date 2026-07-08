@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tutorial/next_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,17 +57,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final TextEditingController _controller = TextEditingController();
+  // int _counter = 0;
+  int nextValue = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  // 
+  // void _incrementCounter() {
+  //   setState(() {
+  //     // This call to setState tells the Flutter framework that something has
+  //     // changed in this State, which causes it to rerun the build method below
+  //     // so that the display can reflect the updated values. If we changed
+  //     // _counter without calling setState(), then the build method would not be
+  //     // called again, and so nothing would appear to happen.
+  //     _counter++;
+  //   });
+  // }
+
+  void next(int a, int b){
+    a = b;
   }
 
   @override
@@ -107,36 +115,96 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: .center,
           children: [
+            
+            //コントローラーを使ってテキストフィールドに入力した文字をデバックに出力する
+            // SizedBox(
+            //   width: 300,
+            //   child: TextField(
+            //     controller: _controller,
+            //     autofocus: false,
+            //     maxLength: 10,
+            //     decoration: InputDecoration(
+            //       border: OutlineInputBorder(),
+            //       labelText: "入力してください"
+            //     ),
+
+            //     onChanged: (value) {
+            //       _controller.text = value;
+            //       print('デバッグ：${_controller.text}');
+            //     } ,
+            //     onSubmitted: (value) {
+            //       _controller.clear();
+            //     },
+            //   ),
+            // ),
+
+
             Expanded(
               child: Center(
-                child: const Text(
-                  'You have pushed the button this many times:',
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                  textAlign: TextAlign.center,),
+                //TextFieldを使うパターン
+                // child: TextField(
+                //   decoration: InputDecoration(
+                //     hintText: "数字を入力してください"
+                //   ),
+
+                //   onChanged: (value) {
+                //     int? intValue = int.tryParse(value) ?? 1;
+                //     print("次のページ");
+                //     next(nextValue, intValue);
+
+                //   },
+
+
+
+                // ),
+
+
+                //TextFormFieldを使うパターン
+                child: TextFormField(
+                  controller: _controller,
+                  autovalidateMode: AutovalidateMode.always,
+                  decoration: InputDecoration(
+                      hintText: "数字を入力してください"
+                    ),
+                    
+                  validator: (value) {
+                    if(value == null || value.isEmpty){
+                      return "入力が必須です";
+                    }
+                    return null;
+                    },
+                
+                  onChanged: (value) {
+                      int? intValue = int.tryParse(value) ?? 1;
+                      next(nextValue, intValue);
+                      // print('デバック：${_controller.text}');
+                        }
+                    
+                ),
               ),
                 
             ),
             Expanded(
-              child: Container(
-                color: Colors.amber,
-                child: Center(
-                  child: Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
+              child: Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NextPage(nextValue)),
+                    );
+                  },
+                  child: Text("次へ"),
                 ),
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: const Icon(Icons.add),
+      // ),
     );
   }
 }
