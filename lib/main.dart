@@ -73,8 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
   //   });
   // }
 
-  void next(int a, int b){
-    a = b;
+  void next(int b){
+    nextValue = b;
   }
 
   @override
@@ -175,9 +175,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                 
                   onChanged: (value) {
-                      int? intValue = int.tryParse(value) ?? 1;
-                      next(nextValue, intValue);
-                      // print('デバック：${_controller.text}');
+                      int intValue = int.tryParse(value) ?? 1;
+                      // nextValue = intValue;
+                      // ↓代入のメソッド使用パターン（うまくいっていない）
+                      next(intValue);
+                      // print('デバックnext：$nextValue');
+                      // print('デバックint：$intValue');
                         }
                     
                 ),
@@ -188,6 +191,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: TextButton(
                   onPressed: () {
+                    // print('デバックnext：$nextValue');
+
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => NextPage(nextValue)),

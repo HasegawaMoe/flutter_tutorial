@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NextPage extends StatelessWidget{
-
-  const NextPage(this.number);
-  final int number;
+  NextPage(this.number);
+  int number;
 
   @override
   Widget build(BuildContext context) {
