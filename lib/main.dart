@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tutorial/next_page.dart';
 
 void main() {
@@ -162,6 +163,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 //TextFormFieldを使うパターン
                 child: TextFormField(
                   controller: _controller,
+                  keyboardType: TextInputType.numberWithOptions(),
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   autovalidateMode: AutovalidateMode.always,
                   decoration: InputDecoration(
                       hintText: "数字を入力してください"
