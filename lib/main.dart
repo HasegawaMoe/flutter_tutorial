@@ -60,6 +60,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _controller = TextEditingController();
   // int _counter = 0;
+  String value1 = "";
   int nextValue = 0;
 
   // 
@@ -163,10 +164,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 //TextFormFieldを使うパターン
                 child: TextFormField(
                   controller: _controller,
-                  keyboardType: TextInputType.numberWithOptions(),
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
+                  // 数字のキーボードを出す
+                  // keyboardType: TextInputType.numberWithOptions(),
+                  // ↓入力制限
+                  // inputFormatters: <TextInputFormatter>[
+                  //   FilteringTextInputFormatter.digitsOnly
+                  // ],
                   autovalidateMode: AutovalidateMode.always,
                   decoration: InputDecoration(
                       hintText: "数字を入力してください"
@@ -180,9 +183,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                 
                   onChanged: (value) {
+                      value1 = value;
                       int intValue = int.tryParse(value) ?? 1;
                       // nextValue = intValue;
-                      // ↓代入のメソッド使用パターン（うまくいっていない）
+                      // ↓代入のメソッド使用パターン
                       next(intValue);
                       // print('デバックnext：$nextValue');
                       // print('デバックint：$intValue');
@@ -196,18 +200,41 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: TextButton(
                   onPressed: () {
-                    // print('デバックnext：$nextValue');
-
-
+                    // print('デバックnext：$nextValue')
+                    //入力値がint型に変換できないときダイアログ出現
+                    if(int.tryParse(value1) == null){
+                      showDialog<void>(
+                        context: context,
+                        builder: (_){
+                          return AlertDialog( 
+                            title: Text("入力が間違っています"),
+                            content: Text("数字を入力してください"),
+                            actions: <Widget>[
+                              FloatingActionButton(
+                                child: Text("はい"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }
+                                
+                              )
+                            ],
+                          );
+                        }
+                      );
+                    }else{
+                    //nullじゃなかったら(数字に変換できれば)次のページに遷移
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => NextPage(nextValue)),
                     );
+                  }
+
                   },
                   child: Text("次へ"),
+                  ),
+
                 ),
               ),
-            ),
           ],
         ),
       ),
