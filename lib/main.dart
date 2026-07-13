@@ -59,9 +59,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _controller = TextEditingController();
-  // int _counter = 0;
-  String value1 = "";
+
   int nextValue = 0;
+  num? parseValue;
 
   // 
   // void _incrementCounter() {
@@ -75,8 +75,33 @@ class _MyHomePageState extends State<MyHomePage> {
   //   });
   // }
 
-  void next(int b){
-    nextValue = b;
+  void next(String a){
+      parseValue = num.tryParse(a);
+      if(parseValue == null){
+        showDialog<void>(
+          context: context,
+          builder: (_){
+            return AlertDialog( 
+              title: Text("入力が間違っています"),
+              content: Text("数字を入力してください"),
+              actions: <Widget>[
+                FloatingActionButton(
+                  child: Text("はい"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }            
+                )
+              ],
+            );
+          }
+        );
+      }else{
+        //nullじゃなかったら(数字に変換できれば)次のページに遷移
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NextPage(parseValue!)),
+        );
+      }
   }
 
   @override
@@ -162,36 +187,36 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
                 //TextFormFieldを使うパターン
-                child: TextFormField(
-                  controller: _controller,
-                  // 数字のキーボードを出す
-                  // keyboardType: TextInputType.numberWithOptions(),
-                  // ↓入力制限
-                  // inputFormatters: <TextInputFormatter>[
-                  //   FilteringTextInputFormatter.digitsOnly
-                  // ],
-                  autovalidateMode: AutovalidateMode.always,
-                  decoration: InputDecoration(
-                      hintText: "数字を入力してください"
-                    ),
-                    
-                  validator: (value) {
-                    if(value == null || value.isEmpty){
-                      return "入力が必須です";
-                    }
-                    return null;
-                    },
-                
-                  onChanged: (value) {
-                      value1 = value;
-                      int intValue = int.tryParse(value) ?? 1;
-                      // nextValue = intValue;
-                      // ↓代入のメソッド使用パターン
-                      next(intValue);
-                      // print('デバックnext：$nextValue');
-                      // print('デバックint：$intValue');
-                        }
-                    
+                child: SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                  
+                    controller: _controller,
+                    // 数字のキーボードを出す
+                    // keyboardType: TextInputType.numberWithOptions(),
+                    // ↓入力制限
+                    // inputFormatters: <TextInputFormatter>[
+                    //   FilteringTextInputFormatter.digitsOnly
+                    // ],
+                    autovalidateMode: AutovalidateMode.always,
+                    decoration: InputDecoration(
+                        hintText: "数字を入力してください"
+                      ),
+                      
+                    validator: (value) {
+                      if(value == null || value.isEmpty){
+                        return "入力が必須です";
+                      }
+                      return null;
+                      },
+                  
+                    // onChanged: (value) {
+                        // nextValue = intValue;
+                        // print('デバックnext：$nextValue');
+                        // print('デバックint：$intValue');
+                          // }
+                      
+                  ),
                 ),
               ),
                 
@@ -200,34 +225,34 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: TextButton(
                   onPressed: () {
-                    // print('デバックnext：$nextValue')
+                    next(_controller.text);
                     //入力値がint型に変換できないときダイアログ出現
-                    if(int.tryParse(value1) == null){
-                      showDialog<void>(
-                        context: context,
-                        builder: (_){
-                          return AlertDialog( 
-                            title: Text("入力が間違っています"),
-                            content: Text("数字を入力してください"),
-                            actions: <Widget>[
-                              FloatingActionButton(
-                                child: Text("はい"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }
+                  //   if(parseValue == null){
+                  //     showDialog<void>(
+                  //       context: context,
+                  //       builder: (_){
+                  //         return AlertDialog( 
+                  //           title: Text("入力が間違っています"),
+                  //           content: Text("数字を入力してください"),
+                  //           actions: <Widget>[
+                  //             FloatingActionButton(
+                  //               child: Text("はい"),
+                  //               onPressed: () {
+                  //                 Navigator.of(context).pop();
+                  //               }
                                 
-                              )
-                            ],
-                          );
-                        }
-                      );
-                    }else{
-                    //nullじゃなかったら(数字に変換できれば)次のページに遷移
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => NextPage(nextValue)),
-                    );
-                  }
+                  //             )
+                  //           ],
+                  //         );
+                  //       }
+                  //     );
+                  //   }else{
+                  //   //nullじゃなかったら(数字に変換できれば)次のページに遷移
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => NextPage(nextValue)),
+                  //   );
+                  // }
 
                   },
                   child: Text("次へ"),
