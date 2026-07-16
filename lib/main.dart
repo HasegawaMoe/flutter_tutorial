@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter_tutorial/next_page.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
+      theme:ThemeData(
         // This is the theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see
@@ -30,13 +31,18 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        // colorScheme: .fromSeed(seedColor: Colors.pink),
-        scaffoldBackgroundColor:Colors.pink[100], 
+        colorScheme: .fromSeed(seedColor: Colors.blue),
 
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
+}
+
+// TextFormFieldをタッチした時にキーボードを表示させない
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
 }
 
 class MyHomePage extends StatefulWidget {
@@ -58,10 +64,114 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController(text: "選択してください");
 
   int nextValue = 0;
   num? parseValue;
+  int radioValue = 0;
+
+  String selectedItem = "none";
+
+
+
+  // Widget pickerItem(String str) {
+  //   return Text(
+  //     str,
+  //     style: TextStyle(fontSize: 32),
+  //   );
+  // }
+
+  // void onSelectedItemChanged(int index) {
+  //   setState(() {
+  //     selectedItem = prefectures[index];
+  //   });
+  // }
+
+  void showPicker() {
+    final List<String> prefectures = [
+      "北海道",
+      "青森",
+      "秋田",
+      "岩手",
+      '宮城',
+      '秋田',
+      '山形',
+      '福島',
+      '茨城',
+      '栃木',
+      '群馬',
+      '埼玉',
+      '千葉',
+      '東京',
+      '神奈川',
+      '新潟',
+      '富山',
+      '石川',
+      '福井',
+      '山梨',
+      '長野',
+      '岐阜',
+      '静岡',
+      '愛知',
+      '三重',
+      '滋賀',
+      '京都',
+      '大阪',
+      '兵庫',
+      '奈良',
+      '和歌山',
+      '鳥取',
+      '島根',
+      '岡山',
+      '広島',
+      '山口',
+      '徳島',
+      '香川',
+      '愛媛',
+      '高知',
+      '福岡',
+      '佐賀',
+      '長崎',
+      '熊本',
+      '大分',
+      '宮崎',
+      '鹿児島',
+      '沖縄',
+    ];
+
+    //TextウィジェットのListに変換している
+    final pickerItems = prefectures.map((item) => Text(item)).toList();
+
+    var selectedIndex = 0;
+
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) {
+        //下からせりあがってくる画面
+        return SizedBox(
+          height: 216,
+          child: GestureDetector(
+            //タップした時にする動き
+            onTap: (){
+              _controller.text = prefectures[selectedIndex]; 
+              Navigator.pop(context);
+            },
+          //この部分をタップするとき
+          child: CupertinoPicker(
+            backgroundColor: Colors.white,
+            //選択肢１個の縦のサイズ
+            itemExtent: 32,
+            onSelectedItemChanged: (int index) {
+              selectedIndex = index;
+              _controller.text = prefectures[selectedIndex];
+            },
+            //Textウィジェットになったリストを表示
+            children: pickerItems
+            ),
+          ),
+        );
+      });
+  }
 
   // 
   // void _incrementCounter() {
@@ -165,100 +275,192 @@ class _MyHomePageState extends State<MyHomePage> {
             //   ),
             // ),
 
-
-            Expanded(
-              child: Center(
-                //TextFieldを使うパターン
-                // child: TextField(
-                //   decoration: InputDecoration(
-                //     hintText: "数字を入力してください"
-                //   ),
-
-                //   onChanged: (value) {
-                //     int? intValue = int.tryParse(value) ?? 1;
-                //     print("次のページ");
-                //     next(nextValue, intValue);
-
-                //   },
-
-
-
-                // ),
-
-
-                //TextFormFieldを使うパターン
-                child: SizedBox(
-                  width: 300,
-                  child: TextFormField(
-                  
-                    controller: _controller,
-                    // 数字のキーボードを出す
-                    // keyboardType: TextInputType.numberWithOptions(),
-                    // ↓入力制限
-                    // inputFormatters: <TextInputFormatter>[
-                    //   FilteringTextInputFormatter.digitsOnly
-                    // ],
-                    autovalidateMode: AutovalidateMode.always,
+            //名前入力フォーム
+            SizedBox(
+              width: 300,
+              child:Column(
+                //すべての子要素がcolumnの幅に合わせて広がる
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text("氏名",
+                  textAlign: TextAlign.left,),
+                  TextFormField(
+                    textAlign: TextAlign.center,
+                    // controller: _controller,
                     decoration: InputDecoration(
-                        hintText: "数字を入力してください"
+                      floatingLabelStyle: TextStyle(
+                        fontSize: 12.0
                       ),
-                      
-                    validator: (value) {
-                      if(value == null || value.isEmpty){
-                        return "入力が必須です";
-                      }
-                      return null;
-                      },
-                  
-                    // onChanged: (value) {
-                        // nextValue = intValue;
-                        // print('デバックnext：$nextValue');
-                        // print('デバックint：$intValue');
-                          // }
-                      
+                      hintText: "山田 太郎"
+                    ),
                   ),
-                ),
+                ],
               ),
-                
             ),
-            Expanded(
-              child: Center(
-                child: TextButton(
-                  onPressed: () {
-                    next(_controller.text);
-                    //入力値がint型に変換できないときダイアログ出現
-                  //   if(parseValue == null){
-                  //     showDialog<void>(
-                  //       context: context,
-                  //       builder: (_){
-                  //         return AlertDialog( 
-                  //           title: Text("入力が間違っています"),
-                  //           content: Text("数字を入力してください"),
-                  //           actions: <Widget>[
-                  //             FloatingActionButton(
-                  //               child: Text("はい"),
-                  //               onPressed: () {
-                  //                 Navigator.of(context).pop();
-                  //               }
-                                
-                  //             )
-                  //           ],
-                  //         );
-                  //       }
-                  //     );
-                  //   }else{
-                  //   //nullじゃなかったら(数字に変換できれば)次のページに遷移
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(builder: (context) => NextPage(nextValue)),
-                  //   );
-                  // }
 
-                  },
-                  child: Text("次へ"),
+            SizedBox(
+              height: 40,
+            ),
+
+
+            //性別のラジオボタン
+            SizedBox(
+              width: 300,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text("性別",
+                  textAlign: TextAlign.left,),
+                  RadioGroup<int>(
+                    groupValue:  radioValue,
+                     onChanged: (int? newValue){
+                      setState(() {
+                        radioValue = newValue!;
+                        // print(radioValue);
+                      });
+                     },
+                     child: Row(
+                      children: [
+                        //ラジオボタンの両側の空間
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Expanded(
+                          child: RadioListTile<int>(
+                            horizontalTitleGap: 0,
+                            contentPadding: EdgeInsets.zero,
+                            value: 1,
+                            title: Text(
+                              "男性",
+                              style: TextStyle(
+                                fontSize: 12.0,
+                  
+                              ),
+                            ),
+                            ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<int>(
+                            horizontalTitleGap: 0,
+                            contentPadding: EdgeInsets.zero,
+                            value: 2,
+                            title: Text(
+                              "女性",
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                              )
+                            ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<int>(
+                            horizontalTitleGap: 0,
+                            contentPadding: EdgeInsets.zero,
+                            value: 3,
+                            title: Text(
+                              "その他",
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),)
+                            ),
+                        ),
+                        //ラジオボタンの両サイドの空間
+                        SizedBox(
+                          width: 30,
+                        ),
+                              
+                      ],
+                     )
                   ),
+                ],
+              ),
+            ),
 
-                ),
+
+            SizedBox(
+              height: 40,
+            ),
+
+
+            //出身地のドラムロールピッカー
+            SizedBox(
+              width: 300,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text("出身地"),
+                  TextFormField(
+                    textAlign: TextAlign.center,
+                    controller: _controller,
+                    // TextFormFieldをタッチした時にキーボードを表示させない
+                    focusNode: AlwaysDisabledFocusNode(),
+                    // decoration: InputDecoration(
+                    //   hintText: "選択してください"
+                    // ),
+                    onTap: () {
+                      showPicker();
+                    },
+                    
+                    
+                    
+                    ),
+                ],
+              ),
+            ),
+              
+              // GestureDetector(
+              //     child: CupertinoPicker(
+                    
+              //       itemExtent: 47,
+              //       onSelectedItemChanged: onSelectedItemChanged,
+              //       children: prefectures.map(pickerItem).toList()),
+              //   ),
+
+
+            
+            SizedBox(
+              height: 40,
+            ),
+
+
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                //ボタンの文字の色
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                next(_controller.text);
+                //入力値がint型に変換できないときダイアログ出現
+              //   if(parseValue == null){
+              //     showDialog<void>(
+              //       context: context,
+              //       builder: (_){
+              //         return AlertDialog( 
+              //           title: Text("入力が間違っています"),
+              //           content: Text("数字を入力してください"),
+              //           actions: <Widget>[
+              //             FloatingActionButton(
+              //               child: Text("はい"),
+              //               onPressed: () {
+              //                 Navigator.of(context).pop();
+              //               }
+                            
+              //             )
+              //           ],
+              //         );
+              //       }
+              //     );
+              //   }else{
+              //   //nullじゃなかったら(数字に変換できれば)次のページに遷移
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => NextPage(nextValue)),
+              //   );
+              // }
+            
+              },
+              child: Text("次へ"),
               ),
           ],
         ),
