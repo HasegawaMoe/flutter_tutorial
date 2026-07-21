@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_tutorial/next_page.dart';
 
@@ -40,10 +41,10 @@ class MyApp extends StatelessWidget {
 }
 
 // TextFormFieldをタッチした時にキーボードを表示させない
-class AlwaysDisabledFocusNode extends FocusNode {
-  @override
-  bool get hasFocus => false;
-}
+// class AlwaysDisabledFocusNode extends FocusNode {
+//   @override
+//   bool get hasFocus => false;
+// }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -63,29 +64,26 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+//ラジオボタンの性別の型
+enum Gender { male, female, other }
+
+
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _controller = TextEditingController(text: "選択してください");
 
   int nextValue = 0;
   num? parseValue;
-  int radioValue = 0;
+  // int radioValue = 0;
+  Gender? gender;
 
   String selectedItem = "none";
 
 
 
-  // Widget pickerItem(String str) {
-  //   return Text(
-  //     str,
-  //     style: TextStyle(fontSize: 32),
-  //   );
-  // }
 
-  // void onSelectedItemChanged(int index) {
-  //   setState(() {
-  //     selectedItem = prefectures[index];
-  //   });
-  // }
+
+
+
 
   void showPicker() {
     final List<String> prefectures = [
@@ -291,7 +289,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       floatingLabelStyle: TextStyle(
                         fontSize: 12.0
                       ),
-                      hintText: "山田 太郎"
+                      hintText: "山田 太郎",
+                      hintStyle: TextStyle(
+                        //ヒントテキストの透明度を変更
+                        color: Colors.grey.withValues(alpha: 0.7),
+                        
+                      )
                     ),
                   ),
                 ],
@@ -311,65 +314,71 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text("性別",
                   textAlign: TextAlign.left,),
-                  RadioGroup<int>(
-                    groupValue:  radioValue,
-                     onChanged: (int? newValue){
+                  RadioGroup<Gender>(
+                    groupValue:  gender,
+                     onChanged: (Gender? newValue){
                       setState(() {
-                        radioValue = newValue!;
-                        // print(radioValue);
+                        gender = newValue!;
+                        // print(gender);
                       });
                      },
-                     child: Row(
-                      children: [
-                        //ラジオボタンの両側の空間
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Expanded(
-                          child: RadioListTile<int>(
-                            horizontalTitleGap: 0,
-                            contentPadding: EdgeInsets.zero,
-                            value: 1,
-                            title: Text(
-                              "男性",
-                              style: TextStyle(
-                                fontSize: 12.0,
-                  
+                     child: Padding(
+                      //Rowの両サイドの空間
+                       padding: EdgeInsets.symmetric(horizontal: 30),
+                       child: Row(
+                        children: [
+                          
+                          //ラジオボタンの両側の空間
+                          // SizedBox(
+                          //   width: 30,
+                          // ),
+                          
+                          Expanded(
+                            child: RadioListTile<Gender>(
+                              horizontalTitleGap: 0,
+                              contentPadding: EdgeInsets.zero,
+                              value: Gender.male,
+                              title: Text(
+                                "男性",
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                         
+                                ),
                               ),
-                            ),
-                            ),
-                        ),
-                        Expanded(
-                          child: RadioListTile<int>(
-                            horizontalTitleGap: 0,
-                            contentPadding: EdgeInsets.zero,
-                            value: 2,
-                            title: Text(
-                              "女性",
-                              style: TextStyle(
-                                fontSize: 12.0,
                               ),
-                              )
-                            ),
-                        ),
-                        Expanded(
-                          child: RadioListTile<int>(
-                            horizontalTitleGap: 0,
-                            contentPadding: EdgeInsets.zero,
-                            value: 3,
-                            title: Text(
-                              "その他",
-                              style: TextStyle(
-                                fontSize: 12.0,
-                              ),)
-                            ),
-                        ),
-                        //ラジオボタンの両サイドの空間
-                        SizedBox(
-                          width: 30,
-                        ),
-                              
-                      ],
+                          ),
+                          Expanded(
+                            child: RadioListTile<Gender>(
+                              horizontalTitleGap: 0,
+                              contentPadding: EdgeInsets.zero,
+                              value: Gender.female,
+                              title: Text(
+                                "女性",
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                                )
+                              ),
+                          ),
+                          Expanded(
+                            child: RadioListTile<Gender>(
+                              horizontalTitleGap: 0,
+                              contentPadding: EdgeInsets.zero,
+                              value: Gender.other,
+                              title: Text(
+                                "その他",
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),)
+                              ),
+                          ),
+                          // //ラジオボタンの両サイドの空間
+                          // SizedBox(
+                          //   width: 30,
+                          // ),
+                                
+                        ],
+                       ),
                      )
                   ),
                 ],
@@ -390,13 +399,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text("出身地"),
                   TextFormField(
+                    readOnly: true,
                     textAlign: TextAlign.center,
                     controller: _controller,
+                    // canRequestFocus: false,
                     // TextFormFieldをタッチした時にキーボードを表示させない
-                    focusNode: AlwaysDisabledFocusNode(),
-                    // decoration: InputDecoration(
-                    //   hintText: "選択してください"
-                    // ),
+                    // focusNode: AlwaysDisabledFocusNode(),
                     onTap: () {
                       showPicker();
                     },
@@ -408,13 +416,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
               
-              // GestureDetector(
-              //     child: CupertinoPicker(
-                    
-              //       itemExtent: 47,
-              //       onSelectedItemChanged: onSelectedItemChanged,
-              //       children: prefectures.map(pickerItem).toList()),
-              //   ),
+
 
 
             
