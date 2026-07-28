@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_tutorial/next_page.dart';
+import 'enum_gender.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,74 +18,37 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme:ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.blue),
-
-      ),
+      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.blue)),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-// TextFormFieldをタッチした時にキーボードを表示させない
-// class AlwaysDisabledFocusNode extends FocusNode {
-//   @override
-//   bool get hasFocus => false;
-// }
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-//ラジオボタンの性別の型
-enum Gender { male, female, other }
-
+void change() {
+  {}
+}
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _controller = TextEditingController(text: "選択してください");
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  //ドラムロールのコントローラー
+  final TextEditingController _controller = TextEditingController();
+  //名前入力フォームのコントローラー
+  final TextEditingController _nController = TextEditingController();
 
-  int nextValue = 0;
-  num? parseValue;
+  // int nextValue = 0;
+  // num? parseValue;
   // int radioValue = 0;
+
+  String? name = "none";
   Gender? gender;
-
   String selectedItem = "none";
-
-
-
-
-
-
-
 
   void showPicker() {
     final List<String> prefectures = [
@@ -150,328 +115,233 @@ class _MyHomePageState extends State<MyHomePage> {
           height: 216,
           child: GestureDetector(
             //タップした時にする動き
-            onTap: (){
-              _controller.text = prefectures[selectedIndex]; 
+            onTap: () {
+              _controller.text = prefectures[selectedIndex];
               Navigator.pop(context);
             },
-          //この部分をタップするとき
-          child: CupertinoPicker(
-            backgroundColor: Colors.white,
-            //選択肢１個の縦のサイズ
-            itemExtent: 32,
-            onSelectedItemChanged: (int index) {
-              selectedIndex = index;
-              _controller.text = prefectures[selectedIndex];
-            },
-            //Textウィジェットになったリストを表示
-            children: pickerItems
+            //この部分をタップするとき
+            child: CupertinoPicker(
+              backgroundColor: Colors.white,
+              //選択肢１個の縦のサイズ
+              itemExtent: 32,
+              onSelectedItemChanged: (int index) {
+                selectedIndex = index;
+                _controller.text = prefectures[selectedIndex];
+              },
+              //Textウィジェットになったリストを表示
+              children: pickerItems,
             ),
           ),
         );
-      });
-  }
-
-  // 
-  // void _incrementCounter() {
-  //   setState(() {
-  //     // This call to setState tells the Flutter framework that something has
-  //     // changed in this State, which causes it to rerun the build method below
-  //     // so that the display can reflect the updated values. If we changed
-  //     // _counter without calling setState(), then the build method would not be
-  //     // called again, and so nothing would appear to happen.
-  //     _counter++;
-  //   });
-  // }
-
-  void next(String a){
-      parseValue = num.tryParse(a);
-      if(parseValue == null){
-        showDialog<void>(
-          context: context,
-          builder: (_){
-            return AlertDialog( 
-              title: Text("入力が間違っています"),
-              content: Text("数字を入力してください"),
-              actions: <Widget>[
-                FloatingActionButton(
-                  child: Text("はい"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }            
-                )
-              ],
-            );
-          }
-        );
-      }else{
-        //nullじゃなかったら(数字に変換できれば)次のページに遷移
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => NextPage(parseValue!)),
-        );
-      }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      // backgroundColor: Colors.pink,
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            
-            //コントローラーを使ってテキストフィールドに入力した文字をデバックに出力する
-            // SizedBox(
-            //   width: 300,
-            //   child: TextField(
-            //     controller: _controller,
-            //     autofocus: false,
-            //     maxLength: 10,
-            //     decoration: InputDecoration(
-            //       border: OutlineInputBorder(),
-            //       labelText: "入力してください"
-            //     ),
+        child: Form(
+          key: _formKey,
 
-            //     onChanged: (value) {
-            //       _controller.text = value;
-            //       print('デバッグ：${_controller.text}');
-            //     } ,
-            //     onSubmitted: (value) {
-            //       _controller.clear();
-            //     },
-            //   ),
-            // ),
+          child: Column(
+            mainAxisAlignment: .center,
+            children: <Widget>[
+              //名前入力フォーム
+              SizedBox(
+                width: 300,
+                child: Column(
+                  //すべての子要素がcolumnの幅に合わせて広がる
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text("氏名", textAlign: TextAlign.left),
+                    // Form(
+                    // child:
+                    TextFormField(
+                      controller: _nController,
+                      validator: (value) {
+                        AutovalidateMode.always;
+                        if (value == null || value.isEmpty) {
+                          return "名前を入力してください";
+                        }
+                        return null;
+                      },
 
-            //名前入力フォーム
-            SizedBox(
-              width: 300,
-              child:Column(
-                //すべての子要素がcolumnの幅に合わせて広がる
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text("氏名",
-                  textAlign: TextAlign.left,),
-                  TextFormField(
-                    textAlign: TextAlign.center,
-                    // controller: _controller,
-                    decoration: InputDecoration(
-                      floatingLabelStyle: TextStyle(
-                        fontSize: 12.0
+                      textAlign: TextAlign.center,
+                      // controller: _controller,
+                      decoration: InputDecoration(
+                        floatingLabelStyle: TextStyle(fontSize: 12.0),
+                        hintText: "山田 太郎",
+                        hintStyle: TextStyle(
+                          //ヒントテキストの透明度を変更
+                          color: Colors.grey.withValues(alpha: 0.7),
+                        ),
                       ),
-                      hintText: "山田 太郎",
-                      hintStyle: TextStyle(
-                        //ヒントテキストの透明度を変更
-                        color: Colors.grey.withValues(alpha: 0.7),
-                        
-                      )
                     ),
-                  ),
-                ],
+                    // ),
+                    // ),
+                  ],
+                ),
               ),
-            ),
 
-            SizedBox(
-              height: 40,
-            ),
+              SizedBox(height: 40),
 
+              //性別のラジオボタン
+              SizedBox(
+                width: 300,
+                child: FormField<Gender>(
+                  validator: (gender) {
+                    if (gender == null) {
+                      return "性別を選択してください";
+                    }
+                    return null;
+                  },
+                  builder: (state) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text("性別", textAlign: TextAlign.left),
 
-            //性別のラジオボタン
-            SizedBox(
-              width: 300,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text("性別",
-                  textAlign: TextAlign.left,),
-                  RadioGroup<Gender>(
-                    groupValue:  gender,
-                     onChanged: (Gender? newValue){
-                      setState(() {
-                        gender = newValue!;
-                        // print(gender);
-                      });
-                     },
-                     child: Padding(
-                      //Rowの両サイドの空間
-                       padding: EdgeInsets.symmetric(horizontal: 30),
-                       child: Row(
-                        children: [
-                          
-                          //ラジオボタンの両側の空間
-                          // SizedBox(
-                          //   width: 30,
-                          // ),
-                          
-                          Expanded(
-                            child: RadioListTile<Gender>(
-                              horizontalTitleGap: 0,
-                              contentPadding: EdgeInsets.zero,
-                              value: Gender.male,
-                              title: Text(
-                                "男性",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                         
+                        // Text(select.errorText ?? ""));
+                        RadioGroup<Gender>(
+                          groupValue: state.value,
+                          onChanged: (value) {
+                            state.didChange(value);
+                            setState(() {
+                              gender = value;
+                              // print(gender);
+                            });
+                          },
+                          child: Padding(
+                            //Rowの両サイドの空間
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                            child: Wrap(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: RadioListTile<Gender>(
+                                        horizontalTitleGap: 0,
+                                        contentPadding: EdgeInsets.zero,
+                                        value: Gender.male,
+                                        title: Text(
+                                          Gender.male.getMessage(),
+                                          // "男性",
+                                          style: TextStyle(fontSize: 12.0),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: RadioListTile<Gender>(
+                                        horizontalTitleGap: 0,
+                                        contentPadding: EdgeInsets.zero,
+                                        value: Gender.female,
+                                        title: Text(
+                                          Gender.female.getMessage(),
+                                          // "女性",
+                                          style: TextStyle(fontSize: 12.0),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: RadioListTile<Gender>(
+                                        horizontalTitleGap: 0,
+                                        contentPadding: EdgeInsets.zero,
+                                        value: Gender.other,
+                                        title: Text(
+                                          Gender.other.getMessage(),
+                                          // "その他",
+                                          style: TextStyle(fontSize: 12.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              ),
+                              ],
+                            ),
                           ),
-                          Expanded(
-                            child: RadioListTile<Gender>(
-                              horizontalTitleGap: 0,
-                              contentPadding: EdgeInsets.zero,
-                              value: Gender.female,
-                              title: Text(
-                                "女性",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                ),
-                                )
-                              ),
+                        ),
+                        if (state.hasError)
+                          Text(
+                            state.errorText ?? "",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              //バリデーションの色を他のバリデーションの赤色と揃える
+                              color: Theme.of(context).colorScheme.error,
+                              fontSize: 12.0,
+                            ),
                           ),
-                          Expanded(
-                            child: RadioListTile<Gender>(
-                              horizontalTitleGap: 0,
-                              contentPadding: EdgeInsets.zero,
-                              value: Gender.other,
-                              title: Text(
-                                "その他",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                ),)
-                              ),
-                          ),
-                          // //ラジオボタンの両サイドの空間
-                          // SizedBox(
-                          //   width: 30,
-                          // ),
-                                
-                        ],
-                       ),
-                     )
-                  ),
-                ],
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
 
+              SizedBox(height: 40),
 
-            SizedBox(
-              height: 40,
-            ),
-
-
-            //出身地のドラムロールピッカー
-            SizedBox(
-              width: 300,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text("出身地"),
-                  TextFormField(
-                    readOnly: true,
-                    textAlign: TextAlign.center,
-                    controller: _controller,
-                    // canRequestFocus: false,
-                    // TextFormFieldをタッチした時にキーボードを表示させない
-                    // focusNode: AlwaysDisabledFocusNode(),
-                    onTap: () {
-                      showPicker();
-                    },
-                    
-                    
-                    
+              //出身地のドラムロールピッカー
+              SizedBox(
+                width: 300,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text("出身地"),
+                    // Form(
+                    // key: _formKey,
+                    // child:
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "選択は必須です";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(hintText: "選択してください"),
+                      readOnly: true,
+                      textAlign: TextAlign.center,
+                      controller: _controller,
+                      onTap: () {
+                        showPicker();
+                      },
                     ),
-                ],
+                    // ),
+                  ],
+                ),
               ),
-            ),
-              
 
+              SizedBox(height: 40),
 
-
-            
-            SizedBox(
-              height: 40,
-            ),
-
-
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.blue,
-                //ボタンの文字の色
-                foregroundColor: Colors.white,
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  //ボタンの文字の色
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  //GlobalKeyを渡したところの、現在の状態（nullなし）でバリデーションを実行して、全てエラーが返ってこなければtrue
+                  if (_formKey.currentState!.validate()) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NextPage(
+                          nameNext: _nController.text,
+                          genderNext: gender,
+                          birthPlaceNext: _controller.text,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Text("次へ"),
               ),
-              onPressed: () {
-                next(_controller.text);
-                //入力値がint型に変換できないときダイアログ出現
-              //   if(parseValue == null){
-              //     showDialog<void>(
-              //       context: context,
-              //       builder: (_){
-              //         return AlertDialog( 
-              //           title: Text("入力が間違っています"),
-              //           content: Text("数字を入力してください"),
-              //           actions: <Widget>[
-              //             FloatingActionButton(
-              //               child: Text("はい"),
-              //               onPressed: () {
-              //                 Navigator.of(context).pop();
-              //               }
-                            
-              //             )
-              //           ],
-              //         );
-              //       }
-              //     );
-              //   }else{
-              //   //nullじゃなかったら(数字に変換できれば)次のページに遷移
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => NextPage(nextValue)),
-              //   );
-              // }
-            
-              },
-              child: Text("次へ"),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
-      // ),
     );
   }
 }

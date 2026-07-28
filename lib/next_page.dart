@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tutorial/main.dart';
+import 'enum_gender.dart';
 
 class NextPage extends StatelessWidget{
-  NextPage(this.number);
-  num number;
+  NextPage({this.nameNext, this.genderNext, this.birthPlaceNext});
+  String? nameNext;
+  Gender? genderNext;
+  String? birthPlaceNext;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +20,10 @@ class NextPage extends StatelessWidget{
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
       ),
-      body: Center(child: Text('$number')),
-
+      body: Center(
+        child: Text(
+          'はじめまして！\n$nameNextさん\nあなたの性別は${genderNext!.getMessage()}\nご出身は$birthPlaceNext\nですね！\nよろしくお願いします！',
+          textAlign: TextAlign.center)),
     );
     // TODO: implement build
   }
