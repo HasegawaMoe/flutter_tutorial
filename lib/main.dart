@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:ffi';
+import 'dart:io';
+import 'dart:ui';
+import 'package:flutter/physics.dart';
+import 'package:flutter_tutorial/response_model.dart';
+
+import 'result_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tutorial/part_enum.dart';
-import 'package:flutter_tutorial/group_model.dart';
-import 'package:flutter_tutorial/member_model.dart';
-import 'package:flutter_tutorial/next_page_details.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.blue)),
-      home: const MyHomePage(title: 'Bands'),
+      home: const MyHomePage(title: 'Search Your Address'),
     );
   }
 }
@@ -30,78 +36,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<GroupModel> groupList = [
-    GroupModel(
-      groupName: "Mrs. GREEN APPLE",
-      image: "assets/images/Mrs.GREENAPPLE.jpeg",
-      formation: 2013,
-      members: [
-        Member(
-          memberName: "大森元貴",
-          memberAge: 29,
-          memberPart: [PartEnum.vocal, PartEnum.guitar],
-        ),
-        Member(
-          memberName: "藤澤涼架",
-          memberAge: 33,
-          memberPart: [PartEnum.keyboard],
-        ),
-        Member(
-          memberName: "若井滉斗",
-          memberAge: 29,
-          memberPart: [PartEnum.guitar],
-        ),
-      ],
-    ),
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _controller = TextEditingController();
 
-    GroupModel(
-      groupName: "King Gnu",
-      image: "assets/images/KingGnu.jpeg",
-      formation: 2017,
-      members: [
-        Member(
-          memberName: "井口理",
-          memberAge: 32,
-          memberPart: [PartEnum.vocal, PartEnum.keyboard],
-        ),
-        Member(
-          memberName: "常田大希",
-          memberAge: 34,
-          memberPart: [PartEnum.guitar, PartEnum.vocal],
-        ),
-        Member(
-          memberName: "新井和輝",
-          memberAge: 33,
-          memberPart: [PartEnum.bassGuitar],
-        ),
-        Member(memberName: "勢喜遊", memberAge: 33, memberPart: [PartEnum.drum]),
-      ],
-    ),
-
-    GroupModel(
-      groupName: "Official髭男dism",
-      image: "assets/images/Official髭男dism.jpg",
-      formation: 2012,
-      members: [
-        Member(
-          memberName: "藤原聡",
-          memberAge: 34,
-          memberPart: [PartEnum.vocal, PartEnum.keyboard],
-        ),
-        Member(
-          memberName: "小笹大輔",
-          memberAge: 32,
-          memberPart: [PartEnum.guitar],
-        ),
-        Member(
-          memberName: "楢﨑誠",
-          memberAge: 37,
-          memberPart: [PartEnum.bassGuitar, PartEnum.sax],
-        ),
-        Member(memberName: "松浦匡希", memberAge: 33, memberPart: [PartEnum.drum]),
-      ],
-    ),
-  ];
+  Map<String, dynamic> decodedJson = {};
+  List<ResultModel> responseAddress = [];
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -113,50 +53,121 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: SizedBox(
-          width: 380,
+          width: 300,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Spacer(),
+                TextFormField(
+                  textAlign: TextAlign.center,
+                  controller: _controller,
+                  maxLength: 8,
+                  decoration: InputDecoration(labelText: "郵便番号"),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    AutovalidateMode.always;
+                    if (value == null || value.isEmpty) {
+                      return "郵便番号を入力してください";
+                    } else if (value.length < 7) {
+                      return "郵便番号を正しく入力してください";
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
 
-          child: ListView.builder(
-            physics: ClampingScrollPhysics(),
-            itemCount: groupList.length,
-            itemBuilder: (context, int index) {
-              return GestureDetector(
-                child: Card(
-                  margin: EdgeInsets.symmetric(vertical: 10.0),
-                  //cardの四隅の丸さをゼロにする（カードの形を四角にする）
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
+                SizedBox(height: 30),
+
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(35.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            groupList[index].groupName!,
-                            // style: TextStyle(fontSize: 100),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      Future<void> getData() async {
+                        var httpResponse = await http.get(
+                          Uri.parse(
+                            'https://zipcloud.ibsnet.co.jp/api/search?zipcode=${_controller.text}',
+                          ),
+                        );
+                        final decodedJson = jsonDecode(httpResponse.body);
+                        final fromJson = ResponseModel.fromJson(decodedJson);
+                        if (fromJson.status == 200) {
+                          if (fromJson.results != null) {
+                            setState(() {
+                              responseAddress = fromJson.results!;
+                              errorMessage = null;
+                            });
+                          } else {
+                            setState(() {
+                              errorMessage = 'この郵便番号は無効です';
+                            });
+                          }
+                        } else if (fromJson.status == 400 ||
+                            fromJson.status == 500) {
+                          setState(() {
+                            errorMessage = fromJson.message;
+                          });
+                        }
+                      }
+
+                      getData();
+                    }
+                  },
+                  child: Text("Search"),
+                ),
+
+                Expanded(
+                  child: errorMessage == null
+                      ? Scrollbar(
+                          thumbVisibility: true,
+                          child: ListView.builder(
+                            itemCount: responseAddress.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  Text(
+                                    '郵便番号：${responseAddress[index].zipcode}',
+                                  ),
+                                  Text(
+                                    '住所：${responseAddress[index].address1}${responseAddress[index].address2}${responseAddress[index].address3}',
+                                  ),
+                                  Text(
+                                    '読み方：${responseAddress[index].kana1}${responseAddress[index].kana2}${responseAddress[index].kana3}',
+                                  ),
+                                  SizedBox(height: 15),
+                                ],
+                              );
+                            },
+                          ),
+                        )
+                      : Text(
+                          '$errorMessage',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 182, 26, 15),
                           ),
                         ),
-                        Icon(
-                          Icons.chevron_right,
-                          color: Colors.blueAccent,
-                          size: 33.0,
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          NextPageDetails(groupDetails: groupList[index]),
-                    ),
-                  );
-                },
-              );
-            },
+
+                //---------- for in を使って繰り返す場合 -----------
+                // for (var resultsList in responseAddress)
+                //   Column(
+                //     children: [
+                //       Text('郵便番号：${resultsList.zipcode}'),
+                //       Text(
+                //         '住所：${resultsList.address1}${resultsList.address2}${resultsList.address3}',
+                //       ),
+                //       Text(
+                //         '読み方${resultsList.kana1}${resultsList.kana2}${resultsList.kana3}',
+                //       ),
+                //       SizedBox(height: 25),
+                //     ],
+                //   ),
+              ],
+            ),
           ),
         ),
       ),
