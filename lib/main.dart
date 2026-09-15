@@ -54,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
         //     // そしてListに変換
       }).toList();
     }
-    print('🌟future：$_userList[0].id}');
   }
 
   @override
@@ -108,7 +107,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   onSelected: (value) {
                     setState(() {
                       value.sortMethod(_userList, value);
-                      print('🌟button押下：${_userList[0].id}');
                     });
                   },
                 ),
@@ -125,8 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
               if (asyncSnapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
               } else {
-                // print('🌟再描画：${userList[0].id}');
-
                 return Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
