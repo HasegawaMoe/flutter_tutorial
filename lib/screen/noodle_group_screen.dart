@@ -11,17 +11,24 @@ class NoodleGroupScreen extends BaseDetailScreen<NoodleModel> {
   }
 
   @override
-  ListTile buildItem(BuildContext context, userdata) {
-    // print('🌟override buildItem : start');
-    return ListTile(
-      title: Text('【UserId】 ${userdata.userId}'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('【Id】 ${userdata.id}'),
-          Text('【Title】 ${userdata.title}'),
-        ],
-      ),
+  Widget createId(noodleGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'UserId : ${noodleGroupModel.userId}',
+          style: TextStyle(fontSize: 17),
+        ),
+        Text('Id : ${noodleGroupModel.id}', style: TextStyle(fontSize: 15)),
+      ],
+    );
+  }
+
+  @override
+  Widget createValue(noodleGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [createLabel('Title :'), Text(noodleGroupModel.title)],
     );
   }
 }

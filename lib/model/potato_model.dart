@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class PotatoModel {
   final int userId;
   final int id;

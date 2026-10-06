@@ -11,26 +11,46 @@ class NotEatingGroupScreen extends BaseDetailScreen<NotEatingModel> {
   }
 
   @override
-  ListTile buildItem(BuildContext context, userdata) {
-    return ListTile(
-      title: Text('【Id】 ${userdata.id}'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('【Name】 ${userdata.name}'),
-          Text('【UserName】 ${userdata.username}'),
-          Text('【Email】 ${userdata.email}'),
-          Text(
-            '【Address】  ${userdata.address.street} ${userdata.address.suite} ${userdata.address.city}',
-          ),
-          Text('【Zipcode】 ${userdata.address.zipcode}'),
-          Text('【Geo】 ${userdata.address.geo.lat} ${userdata.address.geo.lng}'),
-          Text('【Phone】 ${userdata.phone}'),
-          Text('【Website】 ${userdata.website}'),
-          Text('【Company】 ${userdata.company.name}'),
-          Text('${userdata.company.catchPhrase} ${userdata.company.bs}'),
-        ],
-      ),
+  Widget createId(notEatingGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Id : ${notEatingGroupModel.id}', style: TextStyle(fontSize: 17)),
+      ],
+    );
+  }
+
+  @override
+  Widget createValue(notEatingGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        createLabel('Name :'),
+        Text(notEatingGroupModel.name),
+        createLabel('UserName :'),
+        Text(notEatingGroupModel.username),
+        createLabel('Email :'),
+        Text(notEatingGroupModel.email),
+        createLabel('Address :'),
+        Text(
+          '${notEatingGroupModel.address.street} ${notEatingGroupModel.address.suite} ${notEatingGroupModel.address.city}',
+        ),
+        createLabel('Zipcode :'),
+        Text(notEatingGroupModel.address.zipcode),
+        createLabel('Geo :'),
+        Text(
+          '${notEatingGroupModel.address.geo.lat} ${notEatingGroupModel.address.geo.lng}',
+        ),
+        createLabel('Phone :'),
+        Text(notEatingGroupModel.phone),
+        createLabel('Website :'),
+        Text(notEatingGroupModel.website),
+        createLabel('Company :'),
+        Text(notEatingGroupModel.company.name),
+        Text(
+          '${notEatingGroupModel.company.catchPhrase} ${notEatingGroupModel.company.bs}',
+        ),
+      ],
     );
   }
 }

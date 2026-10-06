@@ -13,7 +13,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,51 +42,73 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title, style: TextStyle(color: Colors.white)),
       ),
-      body: ListView.builder(
-        itemCount: faction.length,
-        itemBuilder: (context, int index) {
-          return GestureDetector(
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text('${faction[index].japanese}派'),
-              ),
-            ),
-            onTap: () {
-              FactionEnum selectedFaction = faction[index];
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    switch (selectedFaction) {
-                      case FactionEnum.rice:
-                        return RiceGroupScreen(
-                          selectedFaction: selectedFaction,
-                        );
-                      case FactionEnum.bread:
-                        return BreadGroupScreen(
-                          selectedFaction: selectedFaction,
-                        );
-                      case FactionEnum.noodle:
-                        return NoodleGroupScreen(
-                          selectedFaction: selectedFaction,
-                        );
-                      case FactionEnum.potato:
-                        return PotatoGroupScreen(
-                          selectedFaction: selectedFaction,
-                        );
-                      case FactionEnum.notEating:
-                        return NotEatingGroupScreen(
-                          selectedFaction: selectedFaction,
-                        );
-                    }
-                  },
+      body:
+          // Column(
+          // children: [
+          ListView.builder(
+            itemCount: faction.length,
+            itemBuilder: (context, int index) {
+              return GestureDetector(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text('${faction[index].japanese}派'),
+                  ),
                 ),
+                onTap: () {
+                  FactionEnum selectedFaction = faction[index];
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return switch (selectedFaction) {
+                          FactionEnum.rice => RiceGroupScreen(
+                            selectedFaction: selectedFaction,
+                          ),
+                          FactionEnum.bread => BreadGroupScreen(
+                            selectedFaction: selectedFaction,
+                          ),
+                          FactionEnum.noodle => NoodleGroupScreen(
+                            selectedFaction: selectedFaction,
+                          ),
+                          FactionEnum.potato => PotatoGroupScreen(
+                            selectedFaction: selectedFaction,
+                          ),
+                          FactionEnum.notEating => NotEatingGroupScreen(
+                            selectedFaction: selectedFaction,
+                          ),
+                        };
+
+                        // ---------- switch文で書いた場合 -----------
+                        // switch (selectedFaction) {
+                        //   case FactionEnum.rice:
+                        //     return RiceGroupScreen(
+                        //       selectedFaction: selectedFaction,
+                        //     );
+                        //   case FactionEnum.bread:
+                        //     return BreadGroupScreen(
+                        //       selectedFaction: selectedFaction,
+                        //     );
+                        //   case FactionEnum.noodle:
+                        //     return NoodleGroupScreen(
+                        //       selectedFaction: selectedFaction,
+                        //     );
+                        //   case FactionEnum.potato:
+                        //     return PotatoGroupScreen(
+                        //       selectedFaction: selectedFaction,
+                        //     );
+                        //   case FactionEnum.notEating:
+                        //     return NotEatingGroupScreen(
+                        //       selectedFaction: selectedFaction,
+                        //     );
+                        // }
+                      },
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-      ),
+          ),
     );
   }
 }

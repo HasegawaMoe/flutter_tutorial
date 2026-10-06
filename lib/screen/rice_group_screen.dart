@@ -11,18 +11,29 @@ class RiceGroupScreen extends BaseDetailScreen<RiceModel> {
   }
 
   @override
-  ListTile buildItem(BuildContext context, userdata) {
-    print('🌟override buildItem : start');
-    return ListTile(
-      title: Text('【UserId】 ${userdata.userId}'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('【Id】 ${userdata.id}'),
-          Text('【Title】 ${userdata.title}'),
-          Text('【Body】 ${userdata.body}'),
-        ],
-      ),
+  Widget createId(riceGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'UserId : ${riceGroupModel.userId}',
+          style: TextStyle(fontSize: 17),
+        ),
+        Text('Id : ${riceGroupModel.id}', style: TextStyle(fontSize: 15)),
+      ],
+    );
+  }
+
+  @override
+  Widget createValue(riceGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        createLabel('Title :'),
+        Text(riceGroupModel.title),
+        createLabel('Body :'),
+        Text(riceGroupModel.body),
+      ],
     );
   }
 }

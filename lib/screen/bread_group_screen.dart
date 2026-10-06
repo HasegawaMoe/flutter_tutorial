@@ -11,19 +11,31 @@ class BreadGroupScreen extends BaseDetailScreen<BreadModel> {
   }
 
   @override
-  ListTile buildItem(BuildContext context, userdata) {
-    // print('🌟override buildItem : start');
-    return ListTile(
-      title: Text('【PostId】: ${userdata.postId}'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('【Id】 ${userdata.id}'),
-          Text('【Name】 ${userdata.name}'),
-          Text('【Email】 ${userdata.email}'),
-          Text('【Body】 ${userdata.body}'),
-        ],
-      ),
+  Widget createId(breadGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'PostId : ${breadGroupModel.postId}',
+          style: TextStyle(fontSize: 17),
+        ),
+        Text('Id : ${breadGroupModel.id}', style: TextStyle(fontSize: 15)),
+      ],
+    );
+  }
+
+  @override
+  Widget createValue(breadGroupModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        createLabel('Name :'),
+        Text(breadGroupModel.name),
+        createLabel('Email :'),
+        Text(breadGroupModel.email),
+        createLabel('Body :'),
+        Text(breadGroupModel.body),
+      ],
     );
   }
 }
