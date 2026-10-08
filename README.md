@@ -20,12 +20,17 @@
 - 入力フォームに整数を入力して「次へ」ボタンを押すと、違うページに画面遷移して入力した整数が画面中央に表示されるようにする
 - 未入力の時は「入力が必須です」というバリデーションを出す
 - 整数以外の文字を入力して「次へ」ボタンを押すと、入力エラーのダイアログを出す
+<img width="200" alt="image" src="https://github.com/user-attachments/assets/47ea65f8-4619-4a08-a578-0116fd1f4460" />
+<img width="200" alt="image" src="https://github.com/user-attachments/assets/12c02ba1-c82d-462a-8f97-a76a91c262c0" />
+
+
+
 
 <br><br>
 ### ◼︎ 課題 2: データ入力画面を作る
 - 氏名(入力フォーム)、性別(ラジオボタン)、出身地(CupertinoPicker)の入力欄と「次へ」ボタンを作成する
 - それぞれの情報を入力して「次へ」ボタンを押すと、違うページに画面遷移して入力した情報が全て表示されるようにする
-- 氏名、性別、出身地が選択されていないときにフォームを送信できないようにする
+- 氏名、性別、出身地が一つでも選択されていないときはボタンを押しても画面遷移されないようにする
 <img width="200" alt="Screenshot_20260716-160639" src="https://github.com/user-attachments/assets/279145b6-f319-4aaf-b304-a99a35e6f12c" />
 <img width="200" alt="Screenshot_20260729-140009" src="https://github.com/user-attachments/assets/81bf15a7-9f70-46ff-b184-96ceaf8c5d77" />
 <img width="200" alt="Screenshot_20260729-140115" src="https://github.com/user-attachments/assets/c3179157-76bd-4255-ab75-ff2c60d2d771" />
@@ -35,7 +40,7 @@
 - sharedPreferences ライブラリを使って、入力された情報をスマホに保存できるようにする
 - アプリを落としてまた開いたときに保存した情報を取り出して、氏名・性別・出身地の入力欄に表示させる
 - sharedPreferences に保存した情報を消せるようにする
-- sharedPreferencesを使って保存した情報が、どこに保存されているかを確認する(android端末の場合実態がある)
+- sharedPreferencesを使って保存した情報が、どこに保存されているかを確認する(android端末の場合は実態がある)
 
 <img width="200" alt="Screenshot_20260820-101014" src="https://github.com/user-attachments/assets/1a518ba3-1087-4deb-bf5e-97bbdee57eeb" />
 
@@ -77,7 +82,7 @@
 
 <br><br>
 ### ◼︎　課題 6: JSONデータを使った一覧・詳細表示
-- アプリを開いたときにAPI通信を行い、リンク(https://jsonplaceholder.typicode.com/users) を用いて、JSONデータを取得して一覧表示をする
+- アプリを開いたときにAPI通信(https://jsonplaceholder.typicode.com/users) を行い、JSONデータを取得して一覧表示をする
 - タップして詳細画面へ移動する
 - リストにソート機能をつける（ソートの方法やメソッドはEnumクラスで管理する）
 <img width="200" alt="image" src="https://github.com/user-attachments/assets/6fa45e4e-d762-4dd9-b4d0-ada6ad3230d9" />
@@ -107,20 +112,6 @@
 <img width="200" alt="image" src="https://github.com/user-attachments/assets/698d1277-96eb-472e-9640-a147e1add29f" />
 
 <br><br>
-https://github.com/user-attachments/assets/eb426148-950c-4986-a06c-0809cf9d1cb0
 
 <br>
 
-
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
